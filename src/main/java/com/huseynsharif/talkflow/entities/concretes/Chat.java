@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -13,36 +14,34 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "messages")
-public class Message {
+@Table(name = "chats")
+public class Chat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "message_id")
+    @Column(name = "chat_id")
     private int id;
 
     @NotNull
     @NotBlank
     @OneToOne
-    @JoinColumn(name = "from_user_id")
-    private User fromUser;
+    @JoinColumn(name = "user1_id")
+    private User user1;
 
     @NotNull
     @NotBlank
     @OneToOne
-    @JoinColumn(name = "to_user_id")
-    private User toUser;
+    @JoinColumn(name = "user2_id")
+    private User user2;
 
     @NotNull
     @NotBlank
-    @JoinColumn(name = "message_text")
-    private String messageText;
+    @Column(name = "created_at") // olmasa creationtimestamp qoy
+    private LocalDateTime createdAt;
 
     @NotNull
     @NotBlank
-    @JoinColumn(name = "sent_time")
-    private LocalDateTime sentTime;
-
-
+    @Column(name = "last_message")
+    private LocalDateTime lastMessage;
 
 }
