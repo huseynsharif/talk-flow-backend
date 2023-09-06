@@ -29,4 +29,8 @@ public class ProfilePhoto {
     @JoinColumn(name = "user_id")
     private User user;
 
+    public ProfilePhoto(String photoUrl, User user) {
+        this.photoUrl = photoUrl;
+        this.user = user;
+    }
 }
