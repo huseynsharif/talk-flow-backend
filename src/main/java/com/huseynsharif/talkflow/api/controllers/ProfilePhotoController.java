@@ -1,6 +1,8 @@
 package com.huseynsharif.talkflow.api.controllers;
 
 import com.huseynsharif.talkflow.business.abstracts.ProfilePhotoService;
+import com.huseynsharif.talkflow.core.utilities.results.DataResult;
+import com.huseynsharif.talkflow.entities.concretes.ProfilePhoto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +12,7 @@ import java.io.IOException;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/photos")
+@RequestMapping("/api/profilephotos")
 @CrossOrigin
 public class ProfilePhotoController {
 
@@ -22,7 +24,7 @@ public class ProfilePhotoController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> add(MultipartFile file, int userId) throws IOException {
-        return ResponseEntity.ok(this.profilePhotoService.add(file, userId));
+    public DataResult<ProfilePhoto> add(MultipartFile file, int userId) throws IOException {
+        return this.profilePhotoService.add(file, userId);
     }
 }

@@ -1,11 +1,13 @@
 package com.huseynsharif.talkflow.business.concretes;
 
 import com.huseynsharif.talkflow.business.abstracts.UserService;
+import com.huseynsharif.talkflow.core.adapters.mappers.ModelMapperService;
 import com.huseynsharif.talkflow.core.utilities.results.DataResult;
 import com.huseynsharif.talkflow.core.utilities.results.ErrorDataResult;
 import com.huseynsharif.talkflow.core.utilities.results.SuccessDataResult;
 import com.huseynsharif.talkflow.dataAccess.abstracts.UserDAO;
 import com.huseynsharif.talkflow.entities.concretes.User;
+import com.huseynsharif.talkflow.entities.concretes.dtos.UserDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ import java.util.List;
 public class UserManager implements UserService {
 
     private UserDAO userDAO;
+    private ModelMapperService modelMapperService;
 
 
     @Override
@@ -32,7 +35,13 @@ public class UserManager implements UserService {
     }
 
     @Override
-    public DataResult<User> add(User user) {
+    public DataResult<User> add(UserDTO userDTO) {
+
+            if (!userDTO.getPassword().equals(userDTO.getCpassword())){
+                return new ErrorDataResult<>("Passwords must be same.");
+            }
+
+            User user = modelMapperService.getModelMapper().map(userDTO, User.class);
 
             return new SuccessDataResult<>(this.userDAO.save(user), "User successfully added");
 

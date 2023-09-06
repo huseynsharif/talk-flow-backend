@@ -51,7 +51,10 @@ public class ProfilePhotoManager implements ProfilePhotoService {
 
         User user = this.userDAO.findById(userId).orElseThrow();
 
-        ProfilePhoto profilePhoto = new ProfilePhoto(String.valueOf(uploadResult.get("url")) , user);
+        ProfilePhoto profilePhoto = new ProfilePhoto();
+
+        profilePhoto.setPhotoUrl(String.valueOf(uploadResult.get("url")));
+        profilePhoto.setUser(user);
 
         return new SuccessDataResult<>(this.profilePhotoDAO.save(profilePhoto), "Profile Photo successfully added");
     }
