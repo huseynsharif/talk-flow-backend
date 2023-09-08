@@ -37,13 +37,38 @@ public class UserManager implements UserService {
     @Override
     public DataResult<User> add(UserDTO userDTO) {
 
-            if (!userDTO.getPassword().equals(userDTO.getCpassword())){
-                return new ErrorDataResult<>("Passwords must be same.");
-            }
 
-            User user = modelMapperService.getModelMapper().map(userDTO, User.class);
+        if (!userDTO.getPassword().equals(userDTO.getCpassword())){
+            return new ErrorDataResult<>("Passwords must be same.");
+        }
 
-            return new SuccessDataResult<>(this.userDAO.save(user), "User successfully added");
+        User user = modelMapperService.getModelMapper().map(userDTO, User.class);
+
+        boolean userExists = this.userDAO.findUserByEmail(userDTO.getEmail()).isPresent();
+
+        if (userExists){
+            return new ErrorDataResult<>("Email already taken.");
+        }
+
+
+
+        return new SuccessDataResult<>(this.userDAO.save(user), "User successfully added");
 
     }
+
+    @Override
+    public DataResult<User> findUserByEmailAndPassword(String email, String password) {
+
+        User user = this.userDAO.findUserByEmailAndPassword(email, password);
+
+        if (user==null){
+            return new ErrorDataResult<>("Email or password is incorrect.");
+        }
+        else {
+            return new SuccessDataResult<>(user, "User successfully found.");
+        }
+
+    }
+
+
 }

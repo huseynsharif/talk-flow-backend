@@ -18,6 +18,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/users")
 @AllArgsConstructor
+@CrossOrigin
 public class UserController {
 
     private UserService userService;
@@ -30,6 +31,12 @@ public class UserController {
     @PostMapping("/add")
     public ResponseEntity<?> add(@Valid @RequestBody UserDTO userDTO){
         return ResponseEntity.ok(this.userService.add(userDTO));
+    }
+
+
+    @GetMapping("/findUserByEmailAndPassword")
+    public ResponseEntity<?> findUserByEmailAndPassword(String email, String password){
+        return ResponseEntity.ok(this.userService.findUserByEmailAndPassword(email, password));
     }
 
 

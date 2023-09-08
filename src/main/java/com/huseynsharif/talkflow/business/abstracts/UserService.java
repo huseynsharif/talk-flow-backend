@@ -12,4 +12,6 @@ public interface UserService {
 
     public DataResult<User> add(UserDTO userDTO);
 
+    public DataResult<User> findUserByEmailAndPassword(String email, String password);
+
 }
