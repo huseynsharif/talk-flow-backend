@@ -44,11 +44,15 @@ public class UserManager implements UserService {
 
         User user = modelMapperService.getModelMapper().map(userDTO, User.class);
 
-        boolean userExists = this.userDAO.findUserByEmail(userDTO.getEmail()).isPresent();
+        if (this.userDAO.findUserByNickname(userDTO.getNickname()).isPresent()){
+            return new ErrorDataResult<>("Nickame already taken.");
+        }
 
-        if (userExists){
+        if (this.userDAO.findUserByEmail(userDTO.getEmail()).isPresent()){
             return new ErrorDataResult<>("Email already taken.");
         }
+
+
 
 
 
