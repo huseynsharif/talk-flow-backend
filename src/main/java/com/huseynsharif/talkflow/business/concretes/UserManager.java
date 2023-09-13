@@ -52,10 +52,6 @@ public class UserManager implements UserService {
             return new ErrorDataResult<>("Email already taken.");
         }
 
-
-
-
-
         return new SuccessDataResult<>(this.userDAO.save(user), "User successfully added");
 
     }

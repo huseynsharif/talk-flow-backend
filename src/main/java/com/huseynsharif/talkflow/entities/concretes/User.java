@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -35,5 +38,9 @@ public class User {
     @NotBlank
     @Column(name = "password")
     private String password;
+
+    @ManyToMany
+    @JoinColumn(name = "roles")
+    private Set<Role> roles = new HashSet<>();
 
 }
