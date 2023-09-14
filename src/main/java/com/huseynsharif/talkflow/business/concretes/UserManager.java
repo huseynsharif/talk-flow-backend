@@ -61,19 +61,18 @@ public class UserManager implements UserService {
 
         Set<String> strRoles = userDTO.getRoles();
         Set<Role> roles = new HashSet<>();
-
-        if (strRoles==null){
+        if (strRoles.isEmpty()){
             Role userRole = this.roleDAO.findRoleByRoleName(ERole.USER);
         }
         else {
             strRoles.forEach(role -> {
                 switch (role){
-                    case "admin" :
+                    case "ADMIN" :
                         Role adminRole = this.roleDAO.findRoleByRoleName(ERole.ADMIN);
                         roles.add(adminRole);
                         break;
 
-                    case "user" :
+                    case "USER" :
                         Role userRole = this.roleDAO.findRoleByRoleName(ERole.USER);
                         roles.add(userRole);
                         break;
@@ -83,6 +82,7 @@ public class UserManager implements UserService {
 
 
         }
+
 
         User user = modelMapperService.getModelMapper().map(userDTO, User.class);
 
