@@ -2,12 +2,14 @@ package com.huseynsharif.talkflow.api.controllers;
 
 import com.huseynsharif.talkflow.business.abstracts.UserService;
 import com.huseynsharif.talkflow.core.utilities.results.ErrorDataResult;
+import com.huseynsharif.talkflow.core.utilities.results.Result;
 import com.huseynsharif.talkflow.entities.concretes.User;
 import com.huseynsharif.talkflow.entities.concretes.dtos.UserDTO;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,7 @@ public class UserController {
 
     private UserService userService;
 
+    @PreAuthorize("hasRole('Admin')")
     @GetMapping("getall")
     public ResponseEntity<?> getAll(){
         return ResponseEntity.ok(this.userService.getAll());
@@ -35,8 +38,16 @@ public class UserController {
 
 
     @GetMapping("/findUserByEmailAndPassword")
-    public ResponseEntity<?> findUserByEmailAndPassword(String email, String password){
-        return ResponseEntity.ok(this.userService.findUserByEmailAndPassword(email, password));
+    public ResponseEntity<?> findUserByEmailAndPassword( @Valid String email, @Valid String password){
+
+        Result result = this.userService.findUserByEmailAndPassword(email, password);
+
+        if (result.isSuccess()){
+            return ResponseEntity.ok(result);
+        }
+        else {
+            return ResponseEntity.badRequest().body(result);
+        }
     }
 
 
