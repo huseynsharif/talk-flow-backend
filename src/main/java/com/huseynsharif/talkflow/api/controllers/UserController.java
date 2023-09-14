@@ -1,13 +1,17 @@
 package com.huseynsharif.talkflow.api.controllers;
 
 import com.huseynsharif.talkflow.business.abstracts.UserService;
+import com.huseynsharif.talkflow.core.security.entities.CustomUserDetails;
+import com.huseynsharif.talkflow.core.security.jwt.JwtUtils;
+import com.huseynsharif.talkflow.core.utilities.results.DataResult;
 import com.huseynsharif.talkflow.core.utilities.results.ErrorDataResult;
-import com.huseynsharif.talkflow.core.utilities.results.Result;
-import com.huseynsharif.talkflow.entities.concretes.User;
 import com.huseynsharif.talkflow.entities.concretes.dtos.UserDTO;
+import com.huseynsharif.talkflow.entities.concretes.dtos.UserInfoResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.FieldError;
@@ -15,7 +19,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -24,6 +30,8 @@ import java.util.Map;
 public class UserController {
 
     private UserService userService;
+    private JwtUtils jwtUtils;
+
 
     @PreAuthorize("hasRole('Admin')")
     @GetMapping("getall")
@@ -40,14 +48,22 @@ public class UserController {
     @GetMapping("/findUserByEmailAndPassword")
     public ResponseEntity<?> findUserByEmailAndPassword( @Valid String email, @Valid String password){
 
-        Result result = this.userService.findUserByEmailAndPassword(email, password);
+        DataResult<CustomUserDetails> result = this.userService.findUserByEmailAndPassword(email, password);
 
-        if (result.isSuccess()){
-            return ResponseEntity.ok(result);
-        }
-        else {
-            return ResponseEntity.badRequest().body(result);
-        }
+        CustomUserDetails userDetails = result.getData();
+
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(item -> item.getAuthority())
+                .collect(Collectors.toList());
+
+        ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+
+
+       return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                .body(new UserInfoResponse(userDetails.getId(),
+                        userDetails.getUsername(),
+                        userDetails.getEmail(),
+                        roles));
     }
 
 
@@ -60,7 +76,7 @@ public class UserController {
         for (FieldError fieldError :exception.getBindingResult().getFieldErrors()) {
 
             validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
-            
+
         }
 
         ErrorDataResult<Object> errors = new ErrorDataResult<>(validationErrors, "Validation errors.");
