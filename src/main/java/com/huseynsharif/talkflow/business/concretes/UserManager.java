@@ -76,7 +76,7 @@ public class UserManager implements UserService {
         Set<String> strRoles = userDTO.getRoles();
         Set<Role> roles = new HashSet<>();
 
-        if (strRoles.isEmpty()){
+        if (strRoles==null){
             Role userRole = this.roleDAO.findRoleByRoleName(ERole.USER);
         }
         else {
