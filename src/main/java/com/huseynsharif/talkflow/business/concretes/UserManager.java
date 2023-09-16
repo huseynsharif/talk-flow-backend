@@ -3,7 +3,6 @@ package com.huseynsharif.talkflow.business.concretes;
 import com.huseynsharif.talkflow.business.abstracts.UserService;
 import com.huseynsharif.talkflow.core.adapters.mappers.ModelMapperService;
 import com.huseynsharif.talkflow.core.security.entities.CustomUserDetails;
-import com.huseynsharif.talkflow.core.security.jwt.JwtUtils;
 import com.huseynsharif.talkflow.core.utilities.results.DataResult;
 import com.huseynsharif.talkflow.core.utilities.results.ErrorDataResult;
 import com.huseynsharif.talkflow.core.utilities.results.SuccessDataResult;
@@ -13,22 +12,16 @@ import com.huseynsharif.talkflow.entities.concretes.ERole;
 import com.huseynsharif.talkflow.entities.concretes.Role;
 import com.huseynsharif.talkflow.entities.concretes.User;
 import com.huseynsharif.talkflow.entities.concretes.dtos.UserDTO;
-import com.huseynsharif.talkflow.entities.concretes.dtos.UserInfoResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -108,9 +101,13 @@ public class UserManager implements UserService {
     }
 
     @Override
-    public DataResult<CustomUserDetails> findUserByEmailAndPassword(String email, String password) {
+    public DataResult<CustomUserDetails> login(String email, String password) {
 
         User user = this.userDAO.findUserByEmailAndPassword(email, password);
+
+        if (this.userDAO.findUserByEmail(email).isPresent()){
+            System.out.println("Email var");
+        }
 
         if (user==null){
             return new ErrorDataResult<>("Email or password is incorrect.");

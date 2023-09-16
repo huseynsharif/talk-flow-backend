@@ -45,10 +45,16 @@ public class UserController {
     }
 
 
-    @GetMapping("/findUserByEmailAndPassword")
-    public ResponseEntity<?> findUserByEmailAndPassword( @Valid String email, @Valid String password){
+    @PostMapping("/login")
+    public ResponseEntity<?> login( String email, String password){
 
-        DataResult<CustomUserDetails> result = this.userService.findUserByEmailAndPassword(email, password);
+        DataResult<CustomUserDetails> result = this.userService.login(email, password);
+
+        if (!result.isSuccess()){
+            System.out.println("bad request");
+            return ResponseEntity.badRequest().body(result);
+
+        }
 
         CustomUserDetails userDetails = result.getData();
 
