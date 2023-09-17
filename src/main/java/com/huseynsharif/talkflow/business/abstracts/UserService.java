@@ -16,6 +16,6 @@ public interface UserService {
 
     public DataResult<User> add(UserDTO userDTO);
 
-    public DataResult<CustomUserDetails> login(String email, String password);
+    public DataResult<User> login(String email, String password);
 
 }

@@ -101,27 +101,15 @@ public class UserManager implements UserService {
     }
 
     @Override
-    public DataResult<CustomUserDetails> login(String email, String password) {
+    public DataResult<User> login(String email, String password) {
 
         User user = this.userDAO.findUserByEmailAndPassword(email, password);
-
-        if (this.userDAO.findUserByEmail(email).isPresent()){
-            System.out.println("Email var");
-        }
 
         if (user==null){
             return new ErrorDataResult<>("Email or password is incorrect.");
         }
 
-
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, password));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-
-        return new SuccessDataResult<>(userDetails);
+        return new SuccessDataResult<>(user);
 
     }
 

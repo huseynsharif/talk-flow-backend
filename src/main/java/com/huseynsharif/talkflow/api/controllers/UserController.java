@@ -5,15 +5,23 @@ import com.huseynsharif.talkflow.core.security.entities.CustomUserDetails;
 import com.huseynsharif.talkflow.core.security.jwt.JwtUtils;
 import com.huseynsharif.talkflow.core.utilities.results.DataResult;
 import com.huseynsharif.talkflow.core.utilities.results.ErrorDataResult;
+import com.huseynsharif.talkflow.entities.concretes.User;
 import com.huseynsharif.talkflow.entities.concretes.dtos.UserDTO;
 import com.huseynsharif.talkflow.entities.concretes.dtos.UserInfoResponse;
+import com.huseynsharif.talkflow.entities.concretes.dtos.UserLoginRequestDTO;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.Generated;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -25,19 +33,28 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
-@AllArgsConstructor
 @CrossOrigin
 public class UserController {
 
+    @Autowired
     private UserService userService;
+    @Autowired
     private JwtUtils jwtUtils;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-
-    @PreAuthorize("hasRole('Admin')")
-    @GetMapping("getall")
+    @GetMapping("/getall")
     public ResponseEntity<?> getAll(){
-        return ResponseEntity.ok(this.userService.getAll());
+
+        DataResult<List<User>> result = this.userService.getAll();
+
+        if(!result.isSuccess()){
+            return ResponseEntity.badRequest().body(result);
+        }
+
+        return ResponseEntity.ok(result);
     }
+
 
     @PostMapping("/add")
     public ResponseEntity<?> add(@Valid @RequestBody UserDTO userDTO){
@@ -46,32 +63,39 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<?> login( String email, String password){
+    public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequestDTO loginRequest){
 
-        DataResult<CustomUserDetails> result = this.userService.login(email, password);
+        // Bug: bcrypted pass isteyir
+
+        System.out.println("56");
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        System.out.println("59");
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        System.out.println("60");
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        DataResult<User> result = this.userService.login(loginRequest.getUsername(), loginRequest.getPassword());
 
         if (!result.isSuccess()){
-            System.out.println("bad request");
             return ResponseEntity.badRequest().body(result);
 
         }
-
-        CustomUserDetails userDetails = result.getData();
 
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
-        ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+        String token = jwtUtils.generateJwtToken(authentication);
 
 
-       return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+       return ResponseEntity.ok()
                 .body(new UserInfoResponse(userDetails.getId(),
                         userDetails.getUsername(),
                         userDetails.getEmail(),
+                        token,
                         roles));
     }
-
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

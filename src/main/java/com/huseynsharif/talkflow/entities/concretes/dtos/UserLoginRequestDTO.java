@@ -1,21 +1,16 @@
 package com.huseynsharif.talkflow.entities.concretes.dtos;
 
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UserInfoResponse {
+public class UserLoginRequestDTO {
 
-
-    private int id;
     private String username;
-    private String email;
-    private String token;
-    private List<String> roles;
+    private String password;
 
 }

@@ -14,17 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-
-
     private UserDAO userDao;
-
 
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userDao.findUserByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with email: " + email));
+    public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userDao.findUserByNickname(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
 
         return CustomUserDetails.build(user);
     }
