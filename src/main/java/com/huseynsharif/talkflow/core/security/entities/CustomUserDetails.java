@@ -28,7 +28,7 @@ public class CustomUserDetails implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
     public CustomUserDetails(int id, String username, String email, String password,
-                             Collection<? extends GrantedAuthority> authorities) {
+                           Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.email = email;

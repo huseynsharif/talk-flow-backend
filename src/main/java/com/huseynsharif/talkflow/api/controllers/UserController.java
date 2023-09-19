@@ -43,6 +43,7 @@ public class UserController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+
     @GetMapping("/getall")
     public ResponseEntity<?> getAll(){
 
@@ -65,37 +66,29 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequestDTO loginRequest){
 
-        // Bug: bcrypted pass isteyir
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-        System.out.println("56");
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-        System.out.println("59");
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        System.out.println("60");
+
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        DataResult<User> result = this.userService.login(loginRequest.getUsername(), loginRequest.getPassword());
+        String jwtToken = jwtUtils.generateJwtToken(authentication);
 
-        if (!result.isSuccess()){
-            return ResponseEntity.badRequest().body(result);
-
-        }
 
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
-        String token = jwtUtils.generateJwtToken(authentication);
-
-
-       return ResponseEntity.ok()
+        return ResponseEntity.ok()
                 .body(new UserInfoResponse(userDetails.getId(),
                         userDetails.getUsername(),
                         userDetails.getEmail(),
-                        token,
+                        jwtToken,
                         roles));
     }
+
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

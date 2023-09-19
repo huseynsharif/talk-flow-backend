@@ -4,7 +4,7 @@ package com.huseynsharif.talkflow.core.configs;
 import com.huseynsharif.talkflow.core.security.jwt.AuthEntryPointJwt;
 import com.huseynsharif.talkflow.core.security.jwt.AuthTokenFilter;
 import com.huseynsharif.talkflow.core.security.services.CustomUserDetailsService;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,14 +20,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
 public class WebSecurityConfig {
 
 
-
+    @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
-
+    @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
 
     @Bean

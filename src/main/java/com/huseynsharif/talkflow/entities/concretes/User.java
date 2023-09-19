@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -53,4 +54,10 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
+    public User(String nickname, String email, String password, Set<Role> roles) {
+        this.nickname = nickname;
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+    }
 }

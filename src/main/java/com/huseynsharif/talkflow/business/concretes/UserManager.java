@@ -13,10 +13,12 @@ import com.huseynsharif.talkflow.entities.concretes.Role;
 import com.huseynsharif.talkflow.entities.concretes.User;
 import com.huseynsharif.talkflow.entities.concretes.dtos.UserDTO;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -30,7 +32,9 @@ public class UserManager implements UserService {
     private UserDAO userDAO;
     private RoleDAO roleDAO;
     private ModelMapperService modelMapperService;
-    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
 
@@ -70,7 +74,9 @@ public class UserManager implements UserService {
         Set<Role> roles = new HashSet<>();
 
         if (strRoles==null){
+            System.out.println("salam");
             Role userRole = this.roleDAO.findRoleByRoleName(ERole.USER);
+            roles.add(userRole);
         }
         else {
             strRoles.forEach(role -> {
@@ -92,7 +98,12 @@ public class UserManager implements UserService {
         }
 
 
-        User user = modelMapperService.getModelMapper().map(userDTO, User.class);
+        User user = new User(
+                userDTO.getNickname(),
+                userDTO.getEmail(),
+                passwordEncoder.encode(userDTO.getPassword()),
+                roles
+        );
 
         user.setRoles(roles);
 
