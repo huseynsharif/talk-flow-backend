@@ -43,7 +43,7 @@ public class CustomUserDetails implements UserDetails {
 
         return new CustomUserDetails(
                 user.getId(),
-                user.getNickname(),
+                user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
                 authorities);

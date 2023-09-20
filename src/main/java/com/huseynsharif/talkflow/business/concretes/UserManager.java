@@ -60,7 +60,7 @@ public class UserManager implements UserService {
         }
 
 
-        if (this.userDAO.findUserByNickname(userDTO.getNickname()).isPresent()){
+        if (this.userDAO.findUserByUsername(userDTO.getUsername()).isPresent()){
             return new ErrorDataResult<>("Nickame already taken.");
         }
 
@@ -99,7 +99,7 @@ public class UserManager implements UserService {
 
 
         User user = new User(
-                userDTO.getNickname(),
+                userDTO.getUsername(),
                 userDTO.getEmail(),
                 passwordEncoder.encode(userDTO.getPassword()),
                 roles

@@ -26,8 +26,8 @@ public class User {
 
     @NotNull
     @NotBlank
-    @Column(name = "nick_name")
-    private String nickname;
+    @Column(name = "username")
+    private String username;
 
     @NotNull
     @NotBlank
@@ -54,8 +54,8 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
-    public User(String nickname, String email, String password, Set<Role> roles) {
-        this.nickname = nickname;
+    public User(String username, String email, String password, Set<Role> roles) {
+        this.username = username;
         this.email = email;
         this.password = password;
         this.roles = roles;

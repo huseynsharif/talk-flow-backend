@@ -5,19 +5,15 @@ import com.huseynsharif.talkflow.core.security.entities.CustomUserDetails;
 import com.huseynsharif.talkflow.core.security.jwt.JwtUtils;
 import com.huseynsharif.talkflow.core.utilities.results.DataResult;
 import com.huseynsharif.talkflow.core.utilities.results.ErrorDataResult;
+import com.huseynsharif.talkflow.core.utilities.results.SuccessDataResult;
 import com.huseynsharif.talkflow.entities.concretes.User;
 import com.huseynsharif.talkflow.entities.concretes.dtos.UserDTO;
 import com.huseynsharif.talkflow.entities.concretes.dtos.UserInfoResponse;
 import com.huseynsharif.talkflow.entities.concretes.dtos.UserLoginRequestDTO;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -68,7 +64,6 @@ public class UserController {
 
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -81,14 +76,14 @@ public class UserController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok()
-                .body(new UserInfoResponse(userDetails.getId(),
+                .body(new SuccessDataResult<>(
+                        new UserInfoResponse(userDetails.getId(),
                         userDetails.getUsername(),
                         userDetails.getEmail(),
                         jwtToken,
-                        roles));
+                        roles
+                        ), "User was successfully finded."));
     }
-
-
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

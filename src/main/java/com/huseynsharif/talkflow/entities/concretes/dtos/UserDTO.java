@@ -13,7 +13,7 @@ public class UserDTO {
 
     @NotBlank
     @NotNull
-    private String nickname;
+    private String username;
 
     @Email
     @NotBlank
