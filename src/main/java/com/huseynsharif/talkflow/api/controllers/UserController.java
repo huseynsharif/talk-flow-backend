@@ -34,10 +34,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private JwtUtils jwtUtils;
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
 
     @GetMapping("/getall")
@@ -53,53 +49,5 @@ public class UserController {
     }
 
 
-    @PostMapping("/add")
-    public ResponseEntity<?> add(@Valid @RequestBody UserDTO userDTO){
-        return ResponseEntity.ok(this.userService.add(userDTO));
-    }
 
-
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequestDTO loginRequest){
-
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-
-        String jwtToken = jwtUtils.generateJwtToken(authentication);
-
-
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok()
-                .body(new SuccessDataResult<>(
-                        new UserInfoResponse(userDetails.getId(),
-                        userDetails.getUsername(),
-                        userDetails.getEmail(),
-                        jwtToken,
-                        roles
-                        ), "User was successfully finded."));
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorDataResult<Object> handleValidationException(MethodArgumentNotValidException exception){
-
-        Map<String, String> validationErrors = new HashMap<>();
-
-        for (FieldError fieldError :exception.getBindingResult().getFieldErrors()) {
-
-            validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
-
-        }
-
-        ErrorDataResult<Object> errors = new ErrorDataResult<>(validationErrors, "Validation errors.");
-
-        return errors;
-
-    }
 }

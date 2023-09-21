@@ -12,6 +12,7 @@ import com.huseynsharif.talkflow.entities.concretes.ERole;
 import com.huseynsharif.talkflow.entities.concretes.Role;
 import com.huseynsharif.talkflow.entities.concretes.User;
 import com.huseynsharif.talkflow.entities.concretes.dtos.UserDTO;
+import com.huseynsharif.talkflow.entities.concretes.dtos.UserLoginRequestDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,7 +32,6 @@ public class UserManager implements UserService {
 
     private UserDAO userDAO;
     private RoleDAO roleDAO;
-    private ModelMapperService modelMapperService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -112,15 +112,22 @@ public class UserManager implements UserService {
     }
 
     @Override
-    public DataResult<User> login(String email, String password) {
+    public DataResult<User> login(UserLoginRequestDTO loginRequest) {
 
-        User user = this.userDAO.findUserByEmailAndPassword(email, password);
+//        User user = this.userDAO.findUserByUsernameAndPassword(
+//                loginRequest.getUsername(),
+//                loginRequest.getPassword()
+//        );
 
-        if (user==null){
-            return new ErrorDataResult<>("Email or password is incorrect.");
+
+        User user = this.userDAO.findUserByUsername(loginRequest.getUsername()).orElse(null);
+        System.out.println(user);
+        System.out.println(passwordEncoder.encode(loginRequest.getPassword()));
+        if (user==null ||  !user.getPassword().equals(passwordEncoder.encode(loginRequest.getPassword()))){
+            return new ErrorDataResult<>("Username or password is incorrect.");
         }
 
-        return new SuccessDataResult<>(user);
+        return new SuccessDataResult<>(user, "User successfully finded.");
 
     }
 

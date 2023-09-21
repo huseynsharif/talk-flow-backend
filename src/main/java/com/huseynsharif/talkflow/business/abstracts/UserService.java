@@ -5,6 +5,7 @@ import com.huseynsharif.talkflow.core.utilities.results.DataResult;
 import com.huseynsharif.talkflow.entities.concretes.User;
 import com.huseynsharif.talkflow.entities.concretes.dtos.UserDTO;
 import com.huseynsharif.talkflow.entities.concretes.dtos.UserInfoResponse;
+import com.huseynsharif.talkflow.entities.concretes.dtos.UserLoginRequestDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -16,6 +17,6 @@ public interface UserService {
 
     public DataResult<User> add(UserDTO userDTO);
 
-    public DataResult<User> login(String email, String password);
+    public DataResult<User> login(UserLoginRequestDTO userLoginRequestDTO);
 
 }

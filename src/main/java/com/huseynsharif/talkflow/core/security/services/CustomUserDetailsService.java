@@ -23,6 +23,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userDao.findUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
 
+
+
         return CustomUserDetails.build(user);
     }
 
