@@ -1,13 +1,9 @@
 package com.huseynsharif.talkflow.business.abstracts;
 
-import com.huseynsharif.talkflow.core.security.entities.CustomUserDetails;
 import com.huseynsharif.talkflow.core.utilities.results.DataResult;
 import com.huseynsharif.talkflow.entities.concretes.User;
 import com.huseynsharif.talkflow.entities.concretes.dtos.UserDTO;
-import com.huseynsharif.talkflow.entities.concretes.dtos.UserInfoResponse;
 import com.huseynsharif.talkflow.entities.concretes.dtos.UserLoginRequestDTO;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
