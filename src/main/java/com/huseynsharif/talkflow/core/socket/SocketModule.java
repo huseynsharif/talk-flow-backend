@@ -8,9 +8,11 @@ import com.corundumstudio.socketio.listener.DisconnectListener;
 import com.huseynsharif.talkflow.entities.concretes.dtos.TestMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Component
 @Slf4j
+@CrossOrigin
 public class SocketModule {
 
     private final SocketIOServer socketIOServer;
@@ -31,8 +33,6 @@ public class SocketModule {
 
             String room = senderClient.getHandshakeData().getSingleUrlParam("room");
 
-
-
             senderClient
                     .getNamespace()
                     .getRoomOperations(room)
@@ -40,6 +40,7 @@ public class SocketModule {
                     .forEach(
                             client -> {
                                 if(!client.getSessionId().equals(senderClient.getSessionId())){
+
                                     client.sendEvent("get_message", data);
                                 }
                             }
@@ -49,6 +50,7 @@ public class SocketModule {
 
     private ConnectListener onConnected() {
         return client -> {
+
             String room = client.getHandshakeData().getSingleUrlParam("room");
             client.joinRoom(room);
             client
