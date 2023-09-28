@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @CrossOrigin
 public class SocketModule {
 
-    private final SocketIOServer socketIOServer;
+    private SocketIOServer socketIOServer;
 
     public SocketModule(SocketIOServer socketIOServer) {
         this.socketIOServer = socketIOServer;
 
-        socketIOServer.addConnectListener(onConnected());
-        socketIOServer.addDisconnectListener(onDisconnected());
-        socketIOServer.addEventListener("send_message", TestMessage.class, onMessageReceived());
+        this.socketIOServer.addConnectListener(onConnected());
+        this.socketIOServer.addDisconnectListener(onDisconnected());
+        this.socketIOServer.addEventListener("send_message", TestMessage.class, onMessageReceived());
     }
 
     private DataListener<TestMessage> onMessageReceived() {
@@ -30,7 +30,6 @@ public class SocketModule {
         return (senderClient, data, ackSender) -> {
             log.info(String.format("%s -> %s",
                     senderClient.getSessionId(), data.getContent()));
-
             String room = senderClient.getHandshakeData().getSingleUrlParam("room");
 
             senderClient
@@ -60,7 +59,7 @@ public class SocketModule {
                       "get_message",
                             String.format("%s connected to -> %s", client.getSessionId(), room)
                     );
-            log.info(String.format("SocketID: %s connected", client.getSessionId().toString()));
+            log.info(String.format("SocketID: %s connected to -> %s", client.getSessionId().toString(), room));
         };
     }
 
@@ -76,7 +75,7 @@ public class SocketModule {
                             "get_message",
                             String.format("%s disconnected from -> %s", client.getSessionId(), room)
                     );
-            log.info(String.format("SocketID: %s disconnected", client.getSessionId().toString()));
+            log.info(String.format("SocketID: %s disconnected from -> %s", client.getSessionId().toString(), room));
         };
 
     }

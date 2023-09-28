@@ -74,7 +74,6 @@ public class UserManager implements UserService {
         Set<Role> roles = new HashSet<>();
 
         if (strRoles==null){
-            System.out.println("salam");
             Role userRole = this.roleDAO.findRoleByRoleName(ERole.USER);
             roles.add(userRole);
         }
