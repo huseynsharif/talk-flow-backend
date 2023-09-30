@@ -1,7 +1,8 @@
 package com.huseynsharif.talkflow.entities.concretes.dtos;
 
 
-import ch.qos.logback.core.status.Status;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,12 +10,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class TestMessage {
+public class MessageInputDTO {
 
+    @NotNull
+    @NotBlank
     private String senderName;
-    private String receiverName;
+
+    @NotNull
+    @NotBlank
     private String message;
-    private String date;
-    private Status status;
+
+    @NotNull
+    @NotBlank
+    private String roomName;
 
 }

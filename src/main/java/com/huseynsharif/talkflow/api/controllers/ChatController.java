@@ -1,7 +1,6 @@
 package com.huseynsharif.talkflow.api.controllers;
 
-import com.huseynsharif.talkflow.entities.concretes.dtos.TestMessage;
-import lombok.AllArgsConstructor;
+import com.huseynsharif.talkflow.entities.concretes.dtos.MessageInputDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -18,19 +17,11 @@ public class ChatController {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     @MessageMapping("/chat")
-    // @SendTo("/topic/message")
-    public TestMessage receiveMessage(@Payload TestMessage message){
+    //@SendTo("/topic")
+    public MessageInputDTO receiveMessage(@Payload MessageInputDTO message){
         System.out.println(message);
-        simpMessagingTemplate.convertAndSend("/topic/message", message);
+        simpMessagingTemplate.convertAndSend("/topic/message/" + message.getRoomName(), message);
         return message;
     }
-
-    @MessageMapping("/private-message")
-    public TestMessage recMessage(@Payload TestMessage message){
-        simpMessagingTemplate.convertAndSendToUser(message.getReceiverName(),"/private",message);
-        System.out.println(message.toString());
-        return message;
-    }
-
 
 }
