@@ -25,9 +25,6 @@ public class JwtUtils {
     private int jwtExpirationMs;
 
 
-
-
-
     public String generateJwtToken(Authentication authentication) {
 
         CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
@@ -39,8 +36,6 @@ public class JwtUtils {
                 .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
     }
-
-
 
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key()).build()

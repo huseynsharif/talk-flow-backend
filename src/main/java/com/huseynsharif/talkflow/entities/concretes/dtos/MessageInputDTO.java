@@ -14,14 +14,14 @@ public class MessageInputDTO {
 
     @NotNull
     @NotBlank
-    private String senderName;
+    private int senderId;
+
+    @NotNull
+    @NotBlank
+    private int targetRoomId;
 
     @NotNull
     @NotBlank
     private String message;
-
-    @NotNull
-    @NotBlank
-    private String roomName;
 
 }

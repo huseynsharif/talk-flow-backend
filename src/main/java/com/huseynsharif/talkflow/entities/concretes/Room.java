@@ -28,4 +28,7 @@ public class Room {
     private LocalDateTime createdAt;
 
 
+    public Room(String roomName) {
+        this.roomName = roomName;
+    }
 }

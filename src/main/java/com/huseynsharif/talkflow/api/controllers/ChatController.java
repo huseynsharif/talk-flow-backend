@@ -1,5 +1,6 @@
 package com.huseynsharif.talkflow.api.controllers;
 
+import com.huseynsharif.talkflow.business.abstracts.MessageService;
 import com.huseynsharif.talkflow.entities.concretes.dtos.MessageInputDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -13,14 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ChatController {
 
-
-    private final SimpMessagingTemplate simpMessagingTemplate;
+    private final MessageService messageService;
 
     @MessageMapping("/chat")
     //@SendTo("/topic")
     public MessageInputDTO receiveMessage(@Payload MessageInputDTO message){
-        System.out.println(message);
-        simpMessagingTemplate.convertAndSend("/topic/message/" + message.getRoomName(), message);
+        this.messageService.sendMessage(message);
         return message;
     }
 

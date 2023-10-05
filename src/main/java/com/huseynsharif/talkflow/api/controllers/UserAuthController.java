@@ -3,8 +3,10 @@ package com.huseynsharif.talkflow.api.controllers;
 import com.huseynsharif.talkflow.business.abstracts.UserService;
 import com.huseynsharif.talkflow.core.security.entities.CustomUserDetails;
 import com.huseynsharif.talkflow.core.security.jwt.JwtUtils;
+import com.huseynsharif.talkflow.core.utilities.results.DataResult;
 import com.huseynsharif.talkflow.core.utilities.results.ErrorDataResult;
 import com.huseynsharif.talkflow.core.utilities.results.SuccessDataResult;
+import com.huseynsharif.talkflow.entities.concretes.User;
 import com.huseynsharif.talkflow.entities.concretes.dtos.UserDTO;
 import com.huseynsharif.talkflow.entities.concretes.dtos.UserInfoResponse;
 import com.huseynsharif.talkflow.entities.concretes.dtos.UserLoginRequestDTO;
@@ -54,15 +56,14 @@ public class UserAuthController {
 //        if(!result.isSuccess()){
 //            return ResponseEntity.ok(result);
 //        }
-
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
         String jwtToken = jwtUtils.generateJwtToken(authentication);
-
 
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())

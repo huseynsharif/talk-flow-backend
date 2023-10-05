@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -23,15 +24,16 @@ public class Message {
 
     @NotNull
     @NotBlank
-    @OneToOne
-    @JoinColumn(name = "from_user_id")
-    private User fromUser;
+    @ManyToOne
+    @JoinColumn(name = "sender_user_id")
+    private User senderUserId;
 
     @NotNull
     @NotBlank
-    @OneToOne
-    @JoinColumn(name = "to_user_id")
-    private User toUser;
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private Room targetRoomId;
+
 
     @NotNull
     @NotBlank
@@ -41,8 +43,12 @@ public class Message {
     @NotNull
     @NotBlank
     @JoinColumn(name = "sent_time")
+    @CreationTimestamp
     private LocalDateTime sentTime;
 
-
-
+    public Message(User senderUserId, Room targetRoomId, String messageText) {
+        this.senderUserId = senderUserId;
+        this.targetRoomId = targetRoomId;
+        this.messageText = messageText;
+    }
 }

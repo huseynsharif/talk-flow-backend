@@ -114,8 +114,6 @@ public class UserManager implements UserService {
 
 
         User user = this.userDAO.findUserByUsername(loginRequest.getUsername()).orElse(null);
-        System.out.println(user);
-        System.out.println(passwordEncoder.encode(loginRequest.getPassword()));
         if (user==null ||  !user.getPassword().equals(passwordEncoder.encode(loginRequest.getPassword()))){
             return new ErrorDataResult<>("Username or password is incorrect.");
         }
