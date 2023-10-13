@@ -9,6 +9,7 @@ import com.huseynsharif.talkflow.entities.concretes.Room;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -19,6 +20,8 @@ public class RoomManager implements RoomService {
 
     @Override
     public DataResult<List<Room>> getAll() {
+
+
         return new SuccessDataResult<>(this.roomDAO.findAll(), "Successfully listed");
     }
 

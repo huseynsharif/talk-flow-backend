@@ -4,7 +4,6 @@ import com.huseynsharif.talkflow.business.abstracts.ProfilePhotoService;
 import com.huseynsharif.talkflow.core.utilities.results.DataResult;
 import com.huseynsharif.talkflow.core.utilities.results.ErrorDataResult;
 import com.huseynsharif.talkflow.entities.concretes.ProfilePhoto;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
