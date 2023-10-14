@@ -33,5 +33,12 @@ public class UserController {
     }
 
 
+    @GetMapping("/verificate-user-with-link")
+    public ResponseEntity<?> verificateUserWithLink(@RequestParam("userId") int userId, @RequestParam("token") String token){
+
+        return ResponseEntity.ok(this.userService.verificateUserWithLink(userId, token));
+
+    }
+
 
 }

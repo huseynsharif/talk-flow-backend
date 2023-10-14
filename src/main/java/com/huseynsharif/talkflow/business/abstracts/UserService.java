@@ -1,6 +1,7 @@
 package com.huseynsharif.talkflow.business.abstracts;
 
 import com.huseynsharif.talkflow.core.utilities.results.DataResult;
+import com.huseynsharif.talkflow.core.utilities.results.Result;
 import com.huseynsharif.talkflow.entities.concretes.User;
 import com.huseynsharif.talkflow.entities.concretes.dtos.UserDTO;
 import com.huseynsharif.talkflow.entities.concretes.dtos.UserLoginRequestDTO;
@@ -14,5 +15,7 @@ public interface UserService {
     public DataResult<User> add(UserDTO userDTO);
 
     public DataResult<User> login(UserLoginRequestDTO userLoginRequestDTO);
+
+    public Result verificateUserWithLink(int userId, String token);
 
 }
