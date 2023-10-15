@@ -98,10 +98,10 @@ public class UserManager implements UserService {
 
         user.setRoles(roles);
         User saveUserResult = this.userDAO.save(user);
+
+        //Verification
         EmailVerification newUserVerification = new EmailVerification(user);
-        System.out.println(newUserVerification);
         this.emailVerificationDAO.save(newUserVerification);
-        System.out.println("1");
         this.emailService.sendVerificationEmail(
                 user.getEmail(),
                 templateService.userVerificationTemplate(

@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,15 +20,15 @@ public class EmailVerification {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "token", nullable = false)
+    @Column(name = "token")
     private String token;
 
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @OneToOne
-    @JoinColumn(name = "user", referencedColumnName = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user;
 
     public EmailVerification(User user) {
