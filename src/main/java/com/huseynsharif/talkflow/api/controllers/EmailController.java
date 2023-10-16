@@ -27,24 +27,27 @@ public class EmailController {
     private EmailService emailService;
     private TemplateService templateService;
 
-    @PostMapping("/send-verification-mail")
-    public ResponseEntity<?> sendVerificationMail(){
-        return ResponseEntity.ok(this.emailService.sendEmail(
-                "huseynsharif@gmail.com",
-                "Test",
-                templateService.userVerificationTemplate(89, "12345")));
-    }
+//    @PostMapping("/send-verification-mail")
+//    public ResponseEntity<?> sendVerificationMail(){
+//        return ResponseEntity.ok(this.emailService.sendEmail(
+//                "huseynsharif@gmail.com",
+//                "Test",
+//                templateService.userVerificationTemplate(89, "12345")));
+//    }
 
     @PostMapping("/salam")
     public ResponseEntity<?> salam(){
 
-        User user = this.userDAO.findById(89).orElseThrow();
-        EmailVerification e = new EmailVerification();
-        e.setUser(user);
-        e.setToken(UUID.randomUUID().toString());
-        e.setCreatedAt(LocalDateTime.now());
-        System.out.println(user);
-        System.out.println(e);
-        return ResponseEntity.ok(this.emailVerificationDAO.save(e));
+//        User user = this.userDAO.findById(92).orElseThrow();
+//        EmailVerification e = new EmailVerification();
+//        e.setUser(user);
+//        e.setToken(UUID.randomUUID().toString());
+//        e.setCreatedAt(LocalDateTime.now());
+//        System.out.println(user);
+//        System.out.println(e);
+//        this.emailVerificationDAO.save(e);
+        emailService.sendEmail("huseynsharif@gmail.com", "Salam", "Necesen");
+        emailService.sendVerificationEmailHtml("Mehdi", "huseynsharif@gmail.com", "linkim");
+        return ResponseEntity.ok("Gonderildi");
     }
 }

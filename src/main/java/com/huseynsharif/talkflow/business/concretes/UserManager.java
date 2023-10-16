@@ -38,7 +38,6 @@ public class UserManager implements UserService {
 
     @Override
     public DataResult<List<User>> getAll() {
-
         List<User> users = this.userDAO.findAll();
 
         if (users.isEmpty()) {
@@ -102,9 +101,10 @@ public class UserManager implements UserService {
         //Verification
         EmailVerification newUserVerification = new EmailVerification(user);
         this.emailVerificationDAO.save(newUserVerification);
-        this.emailService.sendVerificationEmail(
+        this.emailService.sendVerificationEmailHtml(
+                user.getUsername(),
                 user.getEmail(),
-                templateService.userVerificationTemplate(
+                verificationLinkGenerator(
                         user.getId(),
                         newUserVerification.getToken()
                 )
@@ -112,6 +112,10 @@ public class UserManager implements UserService {
 
         return new SuccessDataResult<>(saveUserResult, "User successfully added");
 
+    }
+
+    private String verificationLinkGenerator(int userId, String token) {
+        return "http://localhost:8080/api/users/verificate-user-with-link?userId="+userId+"&token=" +token;
     }
 
     @Override
@@ -149,9 +153,9 @@ public class UserManager implements UserService {
         if (!Objects.equals(emailVerification.getToken(), token)) {
             return new ErrorResult("Token is incorrect: " + token);
         }
-
         user.setVerificated(true);
         this.userDAO.save(user);
+        this.emailVerificationDAO.delete(emailVerification);
         return new SuccessResult("Successfully verificated.");
     }
 

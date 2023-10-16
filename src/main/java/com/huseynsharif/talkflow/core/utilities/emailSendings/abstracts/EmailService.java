@@ -8,6 +8,6 @@ public interface EmailService {
 
     Result sendVerificationEmail(String to, String body);
 
-    Result sendVerificationEmailHtml(String to);
+    Result sendVerificationEmailHtml(String username, String to, String url);
 
 }

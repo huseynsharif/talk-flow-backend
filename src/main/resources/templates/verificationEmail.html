@@ -21,8 +21,8 @@
                         <td class=""
                             style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 16px; vertical-align: top; color: #fff; font-weight: 500; text-align: center; border-radius: 3px 3px 0 0; background-color: #38414a; margin: 0; padding: 20px;"
                             align="center" bgcolor="#71b6f9" valign="top">
-                            <a href="#" style="font-size:32px;color:#fff;"> Your Company Name</a> <br>
-                            <span style="margin-top: 10px;display: block;">Please Verify You Email Address</span>
+                            <a href="#" style="font-size:32px;color:#fff;"> TalkFlow Application</a> <br>
+                            <span style="margin-top: 10px;display: block;">Please Verify Your Email Address</span>
                         </td>
                     </tr>
                     <tr
@@ -38,7 +38,7 @@
                                     <td class="content-block"
                                         style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;"
                                         valign="top">
-                                        Hello <strong style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;" th:text="${name}"></strong>
+                                        Hello, <strong style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;" th:text="${name}"></strong>!
                                     </td>
                                 </tr>
                                 <tr
@@ -46,9 +46,7 @@
                                     <td class="content-block"
                                         style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;"
                                         valign="top">
-                                        <p>My name is John Smith, and I am very happy to welcome you on board with my company!</p>
-                                        <p>You joined thousands of users who are already skyrocketing their sales with my company by savings at least 60% on all items</p>
-                                        <p>There's just one more tiny step you need to take to achieve all these amazing things. Please click below to verify your new account:</p>
+                                        <p>Click the button below to verify your account. If you have not register to TalkFlow application, please, skip this email.</p>
                                     </td>
                                 </tr>
                                 <tr
@@ -61,6 +59,15 @@
                                            style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; color: #FFF; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #f1556c; margin: 0; border-color: #f1556c; border-style: solid; border-width: 8px 16px;"
                                            th:href="${url}">
                                             Verify My Account</a>
+                                    </td>
+                                </tr>
+
+                                <tr
+                                        style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                                    <td class="content-block"
+                                        style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;"
+                                        valign="top">
+                                        <p>If button is not working, use this link: <strong style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;" th:text="${url}"></strong></p>
                                     </td>
                                 </tr>
                                 <tr
