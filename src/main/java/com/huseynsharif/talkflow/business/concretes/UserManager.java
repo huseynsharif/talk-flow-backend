@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -31,7 +32,6 @@ public class UserManager implements UserService {
     private RoleDAO roleDAO;
     private EmailVerificationDAO emailVerificationDAO;
     private EmailService emailService;
-    private TemplateService templateService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -88,12 +88,7 @@ public class UserManager implements UserService {
             });
         }
 
-        User user = new User(
-                userDTO.getUsername(),
-                userDTO.getEmail(),
-                passwordEncoder.encode(userDTO.getPassword()),
-                roles
-        );
+        User user = new User(userDTO.getUsername(), userDTO.getEmail(), passwordEncoder.encode(userDTO.getPassword()), roles);
 
         user.setRoles(roles);
         User saveUserResult = this.userDAO.save(user);
@@ -101,36 +96,26 @@ public class UserManager implements UserService {
         //Verification
         EmailVerification newUserVerification = new EmailVerification(user);
         this.emailVerificationDAO.save(newUserVerification);
-        this.emailService.sendVerificationEmailHtml(
-                user.getUsername(),
-                user.getEmail(),
-                verificationLinkGenerator(
-                        user.getId(),
-                        newUserVerification.getToken()
-                )
-        );
+        this.emailService.sendVerificationEmailHtml(user.getUsername(), user.getEmail(), verificationLinkGenerator(user.getId(), newUserVerification.getToken()));
 
         return new SuccessDataResult<>(saveUserResult, "User successfully added");
 
     }
 
     private String verificationLinkGenerator(int userId, String token) {
-        return "http://localhost:8080/api/users/verificate-user-with-link?userId="+userId+"&token=" +token;
+        return "http://localhost:3000/verificate-user-with-link/" + userId + "/" + token;
     }
 
     @Override
     public DataResult<User> login(UserLoginRequestDTO loginRequest) {
 
-//        User user = this.userDAO.findUserByUsernameAndPassword(
-//                loginRequest.getUsername(),
-//                loginRequest.getPassword()
-//        );
-
         User user = this.userDAO.findUserByUsername(loginRequest.getUsername()).orElse(null);
-        if (user == null || !user.getPassword().equals(passwordEncoder.encode(loginRequest.getPassword()))) {
-            return new ErrorDataResult<>("Username or password is incorrect.");
+        if (user == null) {
+            return new ErrorDataResult<>("Username is incorrect");
         }
-
+        if (!user.isVerificated()) {
+            return new ErrorDataResult<>("User has not verified yet.");
+        }
         return new SuccessDataResult<>(user, "User successfully finded.");
 
     }
@@ -153,11 +138,41 @@ public class UserManager implements UserService {
         if (!Objects.equals(emailVerification.getToken(), token)) {
             return new ErrorResult("Token is incorrect: " + token);
         }
+
+        if (!emailVerification.getCreatedAt().plusMinutes(3).isAfter(LocalDateTime.now())) {
+            return new ErrorResult("Token is expired.");
+        }
+
         user.setVerificated(true);
         this.userDAO.save(user);
-        this.emailVerificationDAO.delete(emailVerification);
+//        this.emailVerificationDAO.delete(emailVerification);
         return new SuccessResult("Successfully verificated.");
     }
 
+    @Override
+    public DataResult<User> sendForgotPasswordEmail(String email) {
 
+        User user = this.userDAO.findUserByEmail(email).orElse(null);
+        if (user == null) {
+            return new ErrorDataResult<>("Cannot find user with given email: " + email);
+        }
+
+        EmailVerification verification = new EmailVerification(user);
+        this.emailVerificationDAO.save(verification);
+        this.emailService.sendForgotPasswordEmailHtml(
+                user.getUsername(),
+                user.getEmail(),
+                restorePasswordLinkGenerator(user.getId(),
+                        verification.getToken()
+                ));
+
+
+        return null;
+    }
+
+    private String restorePasswordLinkGenerator(int userId, String token) {
+        return "http://localhost:3000/password-email-verification/" + userId + "/" + token;
+    }
+
+    // TODO: forgot passwordu tamamla, frontda da
 }

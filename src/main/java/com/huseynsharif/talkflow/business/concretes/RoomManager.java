@@ -9,7 +9,6 @@ import com.huseynsharif.talkflow.entities.concretes.Room;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -35,22 +34,22 @@ public class RoomManager implements RoomService {
 
         Room room = this.roomDAO.findById(roomId).orElse(null);
 
-        if (room == null){
+        if (room == null) {
             return new ErrorDataResult<>("Cannot find room with roomId: " + roomId);
         }
 
-        return new SuccessDataResult<>(room , "Successfully finded");
+        return new SuccessDataResult<>(room, "Successfully finded");
     }
 
     @Override
     public DataResult<Integer> findRoomIdByRoomName(String roomName) {
         Room room = this.roomDAO.findRoomByRoomName(roomName);
 
-        if (room == null){
+        if (room == null) {
             Room newRoom = this.roomDAO.save(new Room(roomName));
-            return new SuccessDataResult<>(newRoom.getId() , "Successfully created");
+            return new SuccessDataResult<>(newRoom.getId(), "Successfully created");
         }
 
-        return new SuccessDataResult<>(room.getId() , "Successfully finded");
+        return new SuccessDataResult<>(room.getId(), "Successfully finded");
     }
 }

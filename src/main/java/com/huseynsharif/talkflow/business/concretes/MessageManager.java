@@ -36,13 +36,13 @@ public class MessageManager implements MessageService {
             return new ErrorDataResult<>("Cannot find any message with given roomId: " + id);
         }
 
-       List<MessageResponseDTO> response = oldMessages
-               .stream()
-               .map((message) -> new MessageResponseDTO(
-                   message.getSenderUserId().getUsername(),
-                   message.getTargetRoomId().getRoomName(),
-                   message.getMessageText()
-               )).toList();
+        List<MessageResponseDTO> response = oldMessages
+                .stream()
+                .map((message) -> new MessageResponseDTO(
+                        message.getSenderUserId().getUsername(),
+                        message.getTargetRoomId().getRoomName(),
+                        message.getMessageText()
+                )).toList();
 
         return new SuccessDataResult<>(response, "Successfully listed.");
     }

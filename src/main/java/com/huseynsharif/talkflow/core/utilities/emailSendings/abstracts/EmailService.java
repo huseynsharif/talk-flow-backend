@@ -10,4 +10,6 @@ public interface EmailService {
 
     Result sendVerificationEmailHtml(String username, String to, String url);
 
+    Result sendForgotPasswordEmailHtml(String username, String to, String url);
+
 }

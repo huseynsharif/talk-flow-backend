@@ -73,5 +73,28 @@ public class EmailManager implements EmailService {
         return new SuccessResult("Verification Html email was sent.");
     }
 
+    @Override
+    public Result sendForgotPasswordEmailHtml(String username, String to, String url) {
+        try {
+            Context context = new Context();
+            context.setVariables(Map.of(
+                    "name",username,
+                    "url", url
+            ));
+            String body = templateEngine.process("forgotPasswordEmail", context);
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setPriority(1);
+            helper.setSubject("Restore Password");
+            helper.setFrom(from);
+            helper.setTo(to);
+            helper.setText(body, true);
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+        return new SuccessResult("ForgotPassword Html email was sent.");
+    }
+
 
 }

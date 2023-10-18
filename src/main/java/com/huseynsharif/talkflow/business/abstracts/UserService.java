@@ -18,4 +18,6 @@ public interface UserService {
 
     public Result verificateUserWithLink(int userId, String token);
 
+    public DataResult<User> sendForgotPasswordEmail(String email);
+
 }

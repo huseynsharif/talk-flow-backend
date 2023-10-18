@@ -39,12 +39,10 @@ public class UserAuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-
     @PostMapping("/add")
     public ResponseEntity<?> add(@Valid @RequestBody UserDTO userDTO){
         return ResponseEntity.ok(this.userService.add(userDTO));
     }
-
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequestDTO loginRequest){
@@ -56,6 +54,7 @@ public class UserAuthController {
 //        if(!result.isSuccess()){
 //            return ResponseEntity.ok(result);
 //        }
+
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
@@ -68,6 +67,11 @@ public class UserAuthController {
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
+
+        DataResult<User> result = this.userService.login(loginRequest);
+        if (!result.isSuccess()){
+            return ResponseEntity.ok(result);
+        }
 
         return ResponseEntity.ok()
                 .body(new SuccessDataResult<>(
