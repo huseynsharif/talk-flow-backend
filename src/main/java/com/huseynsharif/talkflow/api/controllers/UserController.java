@@ -3,7 +3,8 @@ package com.huseynsharif.talkflow.api.controllers;
 import com.huseynsharif.talkflow.business.abstracts.UserService;
 import com.huseynsharif.talkflow.core.utilities.results.DataResult;
 import com.huseynsharif.talkflow.entities.concretes.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.huseynsharif.talkflow.entities.concretes.dtos.RestorePasswordRequestDTO;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +14,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin
+@AllArgsConstructor
 public class UserController {
 
-    @Autowired
     private UserService userService;
 
 
@@ -37,6 +38,20 @@ public class UserController {
     public ResponseEntity<?> verificateUserWithLink(@RequestParam("userId") int userId, @RequestParam("token") String token){
 
         return ResponseEntity.ok(this.userService.verificateUserWithLink(userId, token));
+
+    }
+
+    @PostMapping("/send-forgot-password-email")
+    public ResponseEntity<?> forgotPasswordVerification(@RequestParam("email") String email){
+
+        return ResponseEntity.ok(this.userService.sendForgotPasswordEmail(email));
+
+    }
+
+    @PostMapping("/restore-password")
+    public ResponseEntity<?> restorePassword(@RequestBody RestorePasswordRequestDTO restoreRequest){
+
+        return ResponseEntity.ok(this.userService.restorePassword(restoreRequest));
 
     }
 

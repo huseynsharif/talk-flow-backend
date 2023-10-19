@@ -11,6 +11,7 @@ import com.huseynsharif.talkflow.entities.concretes.ERole;
 import com.huseynsharif.talkflow.entities.concretes.EmailVerification;
 import com.huseynsharif.talkflow.entities.concretes.Role;
 import com.huseynsharif.talkflow.entities.concretes.User;
+import com.huseynsharif.talkflow.entities.concretes.dtos.RestorePasswordRequestDTO;
 import com.huseynsharif.talkflow.entities.concretes.dtos.UserDTO;
 import com.huseynsharif.talkflow.entities.concretes.dtos.UserLoginRequestDTO;
 import lombok.AllArgsConstructor;
@@ -165,14 +166,43 @@ public class UserManager implements UserService {
                 restorePasswordLinkGenerator(user.getId(),
                         verification.getToken()
                 ));
-
-
-        return null;
+        return new SuccessDataResult<>("Email was successfully sent.");
     }
 
     private String restorePasswordLinkGenerator(int userId, String token) {
-        return "http://localhost:3000/password-email-verification/" + userId + "/" + token;
+        return "http://localhost:3000/new-password/" + userId + "/" + token;
     }
 
-    // TODO: forgot passwordu tamamla, frontda da
+    @Override
+    public DataResult<User> restorePassword(RestorePasswordRequestDTO restoreRequest) {
+
+        System.out.println("salam");
+        User user = this.userDAO.findById(restoreRequest.getUserId()).orElse(null);
+
+        if (user == null) {
+            return new ErrorDataResult<>("Cannot find user by given id: " + restoreRequest.getUserId());
+        }
+
+        EmailVerification emailVerification = this.emailVerificationDAO.findEmailVerificationByToken(restoreRequest.getToken());
+
+        if (emailVerification == null) {
+            return new ErrorDataResult<>("Cannot find token: " + restoreRequest.getToken());
+        }
+
+        if (!Objects.equals(emailVerification.getToken(), restoreRequest.getToken())) {
+            return new ErrorDataResult<>("Token is incorrect: " + restoreRequest.getToken());
+        }
+
+        if (!emailVerification.getCreatedAt().plusMinutes(3).isAfter(LocalDateTime.now())) {
+            return new ErrorDataResult<>("Token is expired.");
+        }
+
+        if (!Objects.equals(restoreRequest.getPassword(), restoreRequest.getCpassword())) {
+            return new ErrorDataResult<>("Password must be same.");
+        }
+
+        user.setPassword(passwordEncoder.encode(restoreRequest.getPassword()));
+        this.userDAO.save(user);
+        return new SuccessDataResult<>("Password was successfully restored.");
+    }
 }
